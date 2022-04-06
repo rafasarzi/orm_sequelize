@@ -2,7 +2,7 @@ const express = require('express')
 const routes = require('./routes')
 
 const app = express()
-const port = 3500
+const port = 3100
 
 routes(app)
 

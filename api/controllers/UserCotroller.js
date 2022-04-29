@@ -1,7 +1,10 @@
 const { UsersServices } = require('../services')
 const usersServices = new UsersServices()
+const bcrypt = require('bcrypt')
+
 
 class UserController {
+  
 
   static async pegaTodosUsuarios(req, res){  
     try {
@@ -21,8 +24,10 @@ class UserController {
     }
   }
   static async criaUsuario(req, res) {  
-    const novoUsuario = req.body
+    const hashPass =  await bcrypt.hash(req.body.password, 10)
+    const novoUsuario = { username: req.body.username, password:hashPass, email:req.body.email }
     try {
+      console.log('aqui', novoUsuario)
       const novoUsuarioCriado = await usersServices.criaRegistro(novoUsuario)
       return res.status(200).json(novoUsuarioCriado)
     } catch (error) {
@@ -31,7 +36,8 @@ class UserController {
   }
   static async atualizaUsuario(req, res) {  
     const { id } = req.params
-    const novasInfos = req.body
+    const hashPass =  await bcrypt.hash(req.body.password, 10)
+    const novasInfos = { username: req.body.username, password:hashPass , email:req.body.email }
     try {
       await usersServices.atualizaRegistro(novasInfos, Number(id))
       return res.status(200).json({ mensagem: `id ${id} atualizado` })
@@ -42,18 +48,19 @@ class UserController {
   static async apagaUsuario(req, res) {  
     const { id } = req.params
     try {
-      await usersServices.apagaRegistro(Number(id))
+      await usersServices.apagaRegistro(id)
       return res.status(200).json({ mensagem: `id ${id} deletado` })
+
     } catch (error) {
       return res.status(500).json(error.message)
     }
   }
+
   static async restauraUsuario(req, res) {  
     const { id } = req.params
     try {
-      const registroRestaurado = await usersServices
-        .restauraRegistro(Number(id))
-      return res.status(200).json(registroRestaurado)
+      await usersServices.restauraRegistro(id)
+      return res.status(200).json({ mensagem: `id ${id} restaurado` })
     } catch (error) {
       return res.status(500).json(error.message)
     }

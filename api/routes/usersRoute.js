@@ -8,6 +8,5 @@ router
   .put('/users/:id', UserController.atualizaUsuario)  
   .get('/users/:id', UserController.pegaUsuario)  
   .delete('/users/:id', UserController.apagaUsuario)   
-  .post('/users/:id/restaura', UserController.restauraUsuario)  
-
+  .post('/users/:id/restaura', UserController.restauraUsuario)   
 module.exports = router
